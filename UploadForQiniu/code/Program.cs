@@ -76,10 +76,12 @@ namespace UploadForQiniu {
         public void ExportHtml() {
             string time = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
             HtmlExport.Record(_saveKeyList, Path.Combine(_currDir, kRecordFile), time);
-            string path = HtmlExport.Export(_saveKeyList, Path.Combine(_currDir, string.Format("{0}.html", time)));
-            DebugLog("\n--- html path:{0}", path);
-            if (path.Length > 0)
-                System.Diagnostics.Process.Start(path);
+
+            string htmlPath = Path.Combine(_currDir, string.Format("{0}.html", time));
+            HtmlExport.Export(_saveKeyList, htmlPath);
+            DebugLog("\n--- html path:{0}", htmlPath);
+            if (_saveKeyList.Count> 0)
+                System.Diagnostics.Process.Start(htmlPath); // 访问 html
         }
 
         // 重命名上传到云端的文件

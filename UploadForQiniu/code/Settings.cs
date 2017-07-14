@@ -10,8 +10,8 @@ namespace UploadForQiniu {
         public static string SecretKey;
         public static string PreLink;
         public static string Bucket;
-        public static int Width;
-        public static int Height;
+        public static int Width = 120;
+        public static int Height = 120;
         private static bool loaded = false;
 
         public static void Load()

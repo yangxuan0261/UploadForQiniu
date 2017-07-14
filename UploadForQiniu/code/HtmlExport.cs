@@ -9,7 +9,7 @@ using System.IO;
 
 namespace UploadForQiniu {
     class HtmlExport {
-        static string KImgTemp = @"<img height='120' width='120' src='{0}' />";
+        static string KImgTemp = @"<img src='{0}' width='{1}' height='{2}' />";
         static string KSpanTemp = @"<span>{0}</span><br/>{1}";
         static string kTemplate = @"
 <!DOCTYPE html>
@@ -25,18 +25,17 @@ namespace UploadForQiniu {
     </body>
 </html>";
 
-        public static string Export(List<string> urlList, string filePath) {
+        public static void Export(List<string> urlList, string filePath) {
             if (urlList.Count == 0)
-                return "";
+                return;
 
             StringBuilder sb = new StringBuilder("");
             foreach (string url in urlList) {
-                sb.Append(string.Format(KImgTemp, url));
+                sb.Append(string.Format(KImgTemp, url, Settings.Width, Settings.Height));
                 sb.Append(string.Format(KSpanTemp, url, "\r\n"));
             }
             string content = string.Format(kTemplate, sb.ToString());
             Util.WriteFile(filePath, content, false);
-            return filePath;
         }
 
         public static void Record(List<string> urlList, string filePath, string time) {
@@ -48,7 +47,6 @@ namespace UploadForQiniu {
             foreach (string url in urlList) {
                 sb.Append(string.Format("- {0}\r\n", url));
             }
-
             Util.WriteFile(filePath, sb.ToString(), true);
         }
     }
