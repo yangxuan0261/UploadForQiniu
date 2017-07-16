@@ -10,7 +10,7 @@ using System.IO;
 namespace UploadForQiniu {
     class HtmlExport {
         static string KImgTemp = @"<img src='{0}' width='{1}' height='{2}' />";
-        static string KSpanTemp = @"<span>{0}</span><br/>{1}";
+        static string KSpanTemp = @"<span>![]({0})</span><br/>{1}";
         static string kTemplate = @"
 <!DOCTYPE html>
 <html>

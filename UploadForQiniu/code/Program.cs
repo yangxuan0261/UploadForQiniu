@@ -10,7 +10,7 @@ using System.IO;
 namespace UploadForQiniu {
     class Program {
 
-        const string kFlod_need_upload = "need_upload"; 
+        const string kFlod_need_upload = "need_upload";
         const string kFlod_success = "success";
         const string kFlod_fail = "fail";
         const string kRecordFile = "a_record.md"; // 记录所有上传成功的url
@@ -60,12 +60,14 @@ namespace UploadForQiniu {
 
         public void CheckDir(string url) {
             if (!Directory.Exists(url))
-                Directory.CreateDirectory(url);       
+                Directory.CreateDirectory(url);
         }
 
         //加载配置
         public void LoadKey() {
-            Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
+            //Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
+            Settings.LoadFromFile("F:\\workplace_c#\\UploadForQiniu\\token.txt");
+
             DebugLog("--- AccessKey:{0}", Settings.AccessKey);
             DebugLog("--- SecretKey:{0}", Settings.SecretKey);
             DebugLog("--- PreLink:{0}", Settings.PreLink);
@@ -80,7 +82,7 @@ namespace UploadForQiniu {
             string htmlPath = Path.Combine(_currDir, string.Format("{0}.html", time));
             HtmlExport.Export(_saveKeyList, htmlPath);
             DebugLog("\n--- html path:{0}", htmlPath);
-            if (_saveKeyList.Count> 0)
+            if (_saveKeyList.Count > 0)
                 System.Diagnostics.Process.Start(htmlPath); // 访问 html
         }
 
@@ -123,7 +125,7 @@ namespace UploadForQiniu {
         }
 
         // 上传成功或失败移动文件到对应目录
-        public void MoveFile(string filePath , string saveKey) {
+        public void MoveFile(string filePath, string saveKey) {
             bool isSuccess = saveKey.Length > 0;
             string dstFile = "";
             if (isSuccess) {
@@ -134,7 +136,18 @@ namespace UploadForQiniu {
                 _failList.Add(filePath);
                 dstFile = filePath.Replace(kFlod_need_upload, kFlod_fail);
             }
-            File.Move(filePath, dstFile);
+
+            if (File.Exists(dstFile)) {
+                string preName = dstFile.Substring(0, dstFile.LastIndexOf("."));
+                string extName = dstFile.Substring(dstFile.LastIndexOf(".") + 1);
+                dstFile = string.Format("{0}_1{1}", preName, extName);
+            }
+
+            try {
+                File.Move(filePath, dstFile);
+            } catch (System.Exception ex) {
+                Util.Log("--- move file error:\n{0}", ex.Message);
+            }
         }
 
 
