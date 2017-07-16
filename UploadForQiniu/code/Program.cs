@@ -139,7 +139,7 @@ namespace UploadForQiniu {
 
             if (File.Exists(dstFile)) {
                 string preName = dstFile.Substring(0, dstFile.LastIndexOf("."));
-                string extName = dstFile.Substring(dstFile.LastIndexOf(".") + 1);
+                string extName = dstFile.Substring(dstFile.LastIndexOf("."));
                 dstFile = string.Format("{0}_1{1}", preName, extName);
             }
 

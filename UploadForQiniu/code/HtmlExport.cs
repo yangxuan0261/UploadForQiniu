@@ -9,8 +9,9 @@ using System.IO;
 
 namespace UploadForQiniu {
     class HtmlExport {
-        static string KImgTemp = @"<img src='{0}' width='{1}' height='{2}' />";
-        static string KSpanTemp = @"<span>![]({0})</span><br/>{1}";
+        static string KImgTemp = @"<img src='{0}' width='{1}' height='{2}' />&nbsp;&nbsp;";
+        static string KSpanTemp = @"<span id='my_url_{0}'>![]({1})</span>&nbsp;&nbsp;<button class='btn' data-clipboard-target='#my_url_{2}' style='width:50px;height:30px;'>复制</button><br/>{3}";
+        
         static string kTemplate = @"
 <!DOCTYPE html>
 <html>
@@ -22,6 +23,10 @@ namespace UploadForQiniu {
         <div>
 {0}
         </div>
+    <script type='text/javascript' src='https://cdn.staticfile.org/clipboard.js/1.5.15/clipboard.min.js'></script>
+    <script type = 'text/javascript' >
+    var clipboard = new Clipboard('.btn');
+    </script>
     </body>
 </html>";
 
@@ -30,9 +35,10 @@ namespace UploadForQiniu {
                 return;
 
             StringBuilder sb = new StringBuilder("");
-            foreach (string url in urlList) {
+            for (int i = 0; i < urlList.Count; i++) {
+                string url = urlList[i];
                 sb.Append(string.Format(KImgTemp, url, Settings.Width, Settings.Height));
-                sb.Append(string.Format(KSpanTemp, url, "\r\n"));
+                sb.Append(string.Format(KSpanTemp, i, url, i, "\r\n"));
             }
             string content = string.Format(kTemplate, sb.ToString());
             Util.WriteFile(filePath, content, false);
