@@ -7,6 +7,7 @@ using Qiniu.IO;
 using Qiniu.Common;
 using Qiniu.IO.Model;
 using System.IO;
+using Qiniu.JSON;
 
 namespace UploadForQiniu {
     class Program {
@@ -15,6 +16,7 @@ namespace UploadForQiniu {
         const string kFlod_success = "success";
         const string kFlod_fail = "fail";
         const string kRecordFile = "a_record.md"; // 记录所有上传成功的url
+        const string kFile_config = "config.json"; // 配置文件名
 
         string _currDir = "";
         string _flod_need_upload = "";
@@ -25,11 +27,13 @@ namespace UploadForQiniu {
         List<string> _saveKeyList = new List<string>();
         List<string> _failList = new List<string>();
         int _count = 0;
+        public static Settings MySetting = null;
 
         public void Init() {
             _currDir = System.IO.Directory.GetCurrentDirectory();
             DebugLog("--- Current Directory:{0}", _currDir);
             InitFold();
+            LoadConfig();
             InitAuth();
             InitZone();
         }
@@ -41,18 +45,33 @@ namespace UploadForQiniu {
 
         // 初始化上传凭证相关
         public void InitAuth() {
-            LoadKey();
-
-            Mac mac = new Mac(Settings.AccessKey, Settings.SecretKey);
+            Mac mac = new Mac(MySetting.AccessKey, MySetting.SecretKey);
             PutPolicy putPolicy = new PutPolicy();
-            putPolicy.Scope = Settings.Bucket;
+            putPolicy.Scope = MySetting.Bucket;
             putPolicy.SetExpires(3600);
             string jstr = putPolicy.ToJsonString();
             _token = Auth.CreateUploadToken(mac, jstr);
         }
 
         public void InitZone() {
-            Config.SetZone(ZoneID.CN_South, true);
+            ZoneID dstId = (ZoneID) MySetting.ZoneId;
+            Config.SetZone(dstId, true);
+        }
+
+        //加载配置
+        public void LoadConfig() {
+            string configPath = Path.Combine(_currDir, kFile_config);
+            string content = File.ReadAllText(configPath);
+
+            try {
+                JsonHelper.Deserialize(content, out MySetting);
+            } catch (Exception e) {
+                MySetting = null;
+                DebugLog("--- config error:\n{0}", e.Message);
+            }
+
+            if (MySetting != null)
+                DebugLog("---------- LoadConfig:\n{0}", content);
         }
 
         public void InitFold() {
@@ -69,23 +88,12 @@ namespace UploadForQiniu {
                 Directory.CreateDirectory(url);
         }
 
-        //加载配置
-        public void LoadKey() {
-            //Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
-            Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
-
-            DebugLog("--- AccessKey:{0}", Settings.AccessKey);
-            DebugLog("--- SecretKey:{0}", Settings.SecretKey);
-            DebugLog("--- PreLink:{0}", Settings.PreLink);
-            DebugLog("--- Bucket:{0}", Settings.Bucket);
-        }
-
         // 导出 html 及 记录
         public void ExportHtml() {
             string time = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
             HtmlExport.Record(_saveKeyList, Path.Combine(_currDir, kRecordFile), time);
 
-            string htmlPath = Path.Combine(_currDir, string.Format("{0}.html", time));
+            string htmlPath = Path.Combine(_currDir, string.Format("a_{0}.html", time));
             HtmlExport.Export(_saveKeyList, htmlPath);
             DebugLog("\n--- html path:{0}", htmlPath);
             if (_saveKeyList.Count > 0)
@@ -130,24 +138,32 @@ namespace UploadForQiniu {
             }
         }
 
+        public string RenameFileRec(string filepath) {
+            string dstFile = filepath;
+            if (File.Exists(dstFile)) {
+                string preName = dstFile.Substring(0, dstFile.LastIndexOf("."));
+                string extName = dstFile.Substring(dstFile.LastIndexOf("."));
+                dstFile = string.Format("{0}_1{1}", preName, extName);
+
+                dstFile = RenameFileRec(dstFile);
+            }
+            return dstFile;
+        }
+
         // 上传成功或失败移动文件到对应目录
         public void MoveFile(string filePath, string saveKey) {
             bool isSuccess = saveKey.Length > 0;
             string dstFile = "";
             if (isSuccess) {
                 _succList.Add(filePath);
-                _saveKeyList.Add(Settings.PreLink + saveKey);
+                _saveKeyList.Add(MySetting.PreLink + saveKey);
                 dstFile = filePath.Replace(kFlod_need_upload, kFlod_success);
             } else {
                 _failList.Add(filePath);
                 dstFile = filePath.Replace(kFlod_need_upload, kFlod_fail);
             }
 
-            if (File.Exists(dstFile)) {
-                string preName = dstFile.Substring(0, dstFile.LastIndexOf("."));
-                string extName = dstFile.Substring(dstFile.LastIndexOf("."));
-                dstFile = string.Format("{0}_1{1}", preName, extName);
-            }
+            dstFile = RenameFileRec(dstFile);
 
             try {
                 File.Move(filePath, dstFile);
@@ -176,5 +192,7 @@ namespace UploadForQiniu {
             p.Report();
             Console.ReadKey();
         }
+
+        
     }
 }

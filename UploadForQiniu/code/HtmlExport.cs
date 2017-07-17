@@ -37,7 +37,7 @@ namespace UploadForQiniu {
             StringBuilder sb = new StringBuilder("");
             for (int i = 0; i < urlList.Count; i++) {
                 string url = urlList[i];
-                sb.Append(string.Format(KImgTemp, url, Settings.Height));
+                sb.Append(string.Format(KImgTemp, url, Program.MySetting.ImgHeight));
                 sb.Append(string.Format(KSpanTemp, i, url, i, "\r\n"));
             }
             string content = string.Format(kTemplate, sb.ToString());
