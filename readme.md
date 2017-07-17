@@ -31,15 +31,17 @@
        "AccessKey": "aaaaaaaaaaaaaaaaapo3w9o12VMfifyr", // ak
        "SecretKey": "bbbbbbbbbbbbbbbpo3w9o12VMfifyr", // sk
        "PreLink": "http://ccccccccccccc.bkt.clouddn.com/",
-       "ZoneId": 0, //存储空间所在区域，0:华东, 1:华北, 2:华南, 3:北美
-       "Bucket": "wilkeryun", //存储空间名
+       "ZoneId": 2, //存储空间所在区域，0:华东, 1:华北, 2:华南, 3:北美
+       "Bucket": "others", //存储空间名
        "ImgHeight": 120, // 导出html的图片高度
    }
    ```
 
    -  [附录](#附录)
 
-4. 上传成功的 *外链* 会添加到 .exe 可执行程序所在目录 的 *a_record.md* 文件中，markdown格式
+4. 上传成功的 *外链* 会在到 .exe 可执行程序所在目录 生成 html 并自动弹出浏览器显示，同时也会记录到 *a_record.md* 文件中，markdown格式
+
+   ![](http://ot7x90hd4.bkt.clouddn.com/20170717_141251_QQ截图20170717141234.png)
 
 
 ---
@@ -48,18 +50,12 @@
 
 - accessKey、secretKey
 
-  ![](http://7xr37b.com1.z0.glb.clouddn.com/20170716_112436_QQ截图20170716112422.png)
-
-  ​
-
-  ​
-
-  ![](http://7xr37b.com1.z0.glb.clouddn.com/20170716_111913_QQ截图20170716111714.png)
+  ![](http://ot7x90hd4.bkt.clouddn.com/20170717_140114_QQ截图20170717140015.png)
 
 - 外链前缀、存储空间名称
 
-  ![](http://7xr37b.com1.z0.glb.clouddn.com/20170716_111913_QQ截图20170716111842.png)
+  ![](http://ot7x90hd4.bkt.clouddn.com/20170717_141154_QQ截图20170717141106.png)
 
-- 弹窗显示图片的宽、高
+- 弹窗显示图片的 高，点击 *复制*  按钮可复制 md 格式的链接
 
-  ![](http://7xr37b.com1.z0.glb.clouddn.com/20170716_112051_QQ%E6%88%AA%E5%9B%BE20170716112038.png)
+  ![](http://ot7x90hd4.bkt.clouddn.com/20170717_141251_QQ截图20170717141234.png)
