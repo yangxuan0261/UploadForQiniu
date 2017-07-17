@@ -20,25 +20,26 @@
 
 2. 在 .exe 可执行程序所在目录新建 3 个目录：
 
-   1. need_upload：*等待上传* 的资源
+   1. need_upload：*等待上传* 的资源都丢到这个目录之下
    2. success：上传 *成功* 的资源会移到这个目录下
    3. fail：上传 *失败* 的资源会移到这个目录下
 
-3. 在 .exe 可执行程序所在目录新建一个文件 *token.txt*，内容类似：
+3. 在 .exe 可执行程序所在目录新建一个文件 *config.json* 内容入校：
 
    ```json
-   rBO3Oez5FKGgJsGqv4UAfrO4Cpo3w9o12VMfifyr
-   xL2C42tg_VwzduiUP7Y2nZgYaLKNigMgFQJzXw9r
-   http://7xr37b.com1.z0.glb.clouddn.com/
-   wilkeryun
-   120
-   120
+   {
+       "AccessKey": "aaaaaaaaaaaaaaaaapo3w9o12VMfifyr", // ak
+       "SecretKey": "bbbbbbbbbbbbbbbpo3w9o12VMfifyr", // sk
+       "PreLink": "http://ccccccccccccc.bkt.clouddn.com/",
+       "ZoneId": 0, //存储空间所在区域，0:华东, 1:华北, 2:华南, 3:北美
+       "Bucket": "wilkeryun", //存储空间名
+       "ImgHeight": 120, // 导出html的图片高度
+   }
    ```
 
-   - 每一行内容的意义：accessKey、secretKey、外链前缀、存储空间名称、弹窗显示图片的宽、弹窗显示图片的高，见 [附录](#附录)
+   -  [附录](#附录)
 
-4. 上传成功的外链会添加到 .exe 可执行程序所在目录 的 *a_record.md* 文件中，markdown格式
-
+4. 上传成功的 *外链* 会添加到 .exe 可执行程序所在目录 的 *a_record.md* 文件中，markdown格式
 
 
 ---
