@@ -9,7 +9,7 @@ using System.IO;
 
 namespace UploadForQiniu {
     class HtmlExport {
-        static string KImgTemp = @"<img src='{0}' width='{1}' height='{2}' />&nbsp;&nbsp;";
+        static string KImgTemp = @"<img src='{0}' height='{1}' />&nbsp;&nbsp;";
         static string KSpanTemp = @"<span id='my_url_{0}'>![]({1})</span>&nbsp;&nbsp;<button class='btn' data-clipboard-target='#my_url_{2}' style='width:50px;height:30px;'>复制</button><br/>{3}";
         
         static string kTemplate = @"
@@ -37,7 +37,7 @@ namespace UploadForQiniu {
             StringBuilder sb = new StringBuilder("");
             for (int i = 0; i < urlList.Count; i++) {
                 string url = urlList[i];
-                sb.Append(string.Format(KImgTemp, url, Settings.Width, Settings.Height));
+                sb.Append(string.Format(KImgTemp, url, Settings.Height));
                 sb.Append(string.Format(KSpanTemp, i, url, i, "\r\n"));
             }
             string content = string.Format(kTemplate, sb.ToString());

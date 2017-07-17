@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Qiniu.Util;
 using Qiniu.IO;
+using Qiniu.Common;
 using Qiniu.IO.Model;
 using System.IO;
 
@@ -30,6 +31,7 @@ namespace UploadForQiniu {
             DebugLog("--- Current Directory:{0}", _currDir);
             InitFold();
             InitAuth();
+            InitZone();
         }
 
         //日志适配，方便移植到不同平台
@@ -49,6 +51,10 @@ namespace UploadForQiniu {
             _token = Auth.CreateUploadToken(mac, jstr);
         }
 
+        public void InitZone() {
+            Config.SetZone(ZoneID.CN_South, true);
+        }
+
         public void InitFold() {
             _flod_need_upload = Path.Combine(_currDir, kFlod_need_upload);
             _flod_success = Path.Combine(_currDir, kFlod_success);
@@ -66,7 +72,7 @@ namespace UploadForQiniu {
         //加载配置
         public void LoadKey() {
             //Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
-            Settings.LoadFromFile("F:\\workplace_c#\\UploadForQiniu\\token.txt");
+            Settings.LoadFromFile("G:\\workplace_c#\\UploadForQiniu\\UploadForQiniu\\token.txt");
 
             DebugLog("--- AccessKey:{0}", Settings.AccessKey);
             DebugLog("--- SecretKey:{0}", Settings.SecretKey);
