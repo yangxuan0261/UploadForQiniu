@@ -17,6 +17,8 @@ namespace UploadForQiniu {
         const string kFlod_fail = "fail";
         const string kRecordFile = "a_record.md"; // 记录所有上传成功的url
         const string kFile_config = "config.json"; // 配置文件名
+        const string kFile_uploaded= "uploaded.json"; // 已上传成功记录文件名
+
 
         string _currDir = "";
         string _flod_need_upload = "";
@@ -28,6 +30,8 @@ namespace UploadForQiniu {
         List<string> _failList = new List<string>();
         int _count = 0;
         public static Settings MySetting = null;
+
+        Dictionary<string, string> _uploadedMap = new Dictionary<string, string>();
 
         public void Init() {
             _currDir = System.IO.Directory.GetCurrentDirectory();
@@ -138,6 +142,18 @@ namespace UploadForQiniu {
             }
         }
 
+        public void RecordUploaded(string filePath, string url) {
+            filePath = filePath.Replace("\\", "/");
+            string pngFile = filePath.Substring(filePath.LastIndexOf("/") + 1);
+            _uploadedMap.Add(pngFile, url);
+        }
+
+        public void ExportUploaded() {
+            string str = JsonHelper.Serialize<Dictionary<string, string>>(_uploadedMap);
+            string path = Path.Combine(_currDir, kFile_uploaded);
+            File.WriteAllText(path, str);
+        }
+
         public string RenameFileRec(string filepath) {
             string dstFile = filepath;
             if (File.Exists(dstFile)) {
@@ -156,7 +172,9 @@ namespace UploadForQiniu {
             string dstFile = "";
             if (isSuccess) {
                 _succList.Add(filePath);
-                _saveKeyList.Add(MySetting.PreLink + saveKey);
+                string url = MySetting.PreLink + saveKey;
+                _saveKeyList.Add(url);
+                RecordUploaded(filePath, url);
                 dstFile = filePath.Replace(kFlod_need_upload, kFlod_success);
             } else {
                 _failList.Add(filePath);
@@ -189,6 +207,7 @@ namespace UploadForQiniu {
             p.Init();
             p.DoUpload();
             p.ExportHtml();
+            p.ExportUploaded();
             p.Report();
             Console.ReadKey();
         }
