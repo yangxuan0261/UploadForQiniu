@@ -1,6 +1,7 @@
-# Deprecated
+
 > 强烈建议 vscode 去集成上传到七牛云的插件, 可以参考: [vscode-七牛云上传插件](https://blog.csdn.net/yangxuan0261/article/details/84496380), 还可以自动监听然后自动上传返回md连接到剪贴板, 直接粘贴到文件中.
 
+# Deprecated
 ---
 > 简单的业务逻辑，相关版本
 >
